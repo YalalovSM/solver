@@ -1,30 +1,27 @@
 package math
 
 import (
+	"log"
 	"math/big"
-	"runtime"
 	"sync"
+	"time"
 )
 
 // FactorialTree Calculate factorial by tree calculation method
 func FactorialTree(n int) *big.Int {
+	defer timeTrack(time.Now(), n)
 	// number of goroutines to run in parallel
-	threads := 2
-	runtime.GOMAXPROCS(2)
+	workers := 2
 
 	if n < 0 {
 		return big.NewInt(0)
-	}
-
-	if n == 1 {
-		return big.NewInt(1)
 	}
 
 	if n == 1 || n == 2 {
 		return big.NewInt(int64(n))
 	}
 
-	if n < threads+1 {
+	if n < workers+1 {
 		return prodTree(2, n)
 	}
 
@@ -32,11 +29,11 @@ func FactorialTree(n int) *big.Int {
 
 	wg := &sync.WaitGroup{}
 
-	diff := (n - 2) / threads
+	diff := (n - 2) / workers
 	left := 2
 	var right int
 
-	for i := 0; i < threads; i++ {
+	for i := 0; i < workers; i++ {
 		if right = left + diff; right > n {
 			right = n
 		}
@@ -86,4 +83,9 @@ func prodTree(left, right int) *big.Int {
 	m := (left + right) / 2
 
 	return big.NewInt(0).Mul(prodTree(left, m), prodTree(m+1, right))
+}
+
+func timeTrack(start time.Time, n int) {
+	elapsed := time.Since(start)
+	log.Printf("calculation of %d! took %s", n, elapsed)
 }

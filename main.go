@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/yalalovsm/solver/math"
 
@@ -28,11 +27,7 @@ func main() {
 func factorialHandler(w http.ResponseWriter, r *http.Request) {
 	number, _ := strconv.Atoi(mux.Vars(r)["number"])
 
-	start := time.Now()
 	f := math.FactorialTree(number)
-	end := time.Since(start)
-
-	log.Printf("Execution time for %d! is %s", number, end)
 
 	responseWith(w, http.StatusOK, f.String())
 }
