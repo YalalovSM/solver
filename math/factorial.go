@@ -25,7 +25,7 @@ func FactorialTree(n int) *big.Int {
 		return prodTree(2, n)
 	}
 
-	ch := make(chan *big.Int)
+	ch := make(chan *big.Int, workers)
 
 	wg := &sync.WaitGroup{}
 
